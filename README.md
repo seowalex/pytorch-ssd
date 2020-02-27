@@ -7,7 +7,6 @@ Currently, it has MobileNetV1, MobileNetV2, and VGG based SSD/SSD-Lite implement
 
 It also has out-of-box support for retraining on Google Open Images dataset.
 
-![Example of Mobile SSD](readme_ssd_example.jpg  "Example of Mobile SSD(Courtesy of https://www.pexels.com/@mirit-assaf-299757 for the image.")
 
 ## Dependencies
 1. Python 3.6+
@@ -35,7 +34,7 @@ python run_ssd_live_caffe2.py models/mobilenet-v1-ssd_init_net.pb models/mobilen
 
 You can see a decent speed boost by using Caffe2.
 
-### Run the live MobileNetV2 SSD Lite demo
+### Run the live MobileNetV2 SSD Lite demo and extract weights for tkDNN
 
 ```bash
 wget -P models https://storage.googleapis.com/models-hao/mb2-ssd-lite-mp-0_686.pth
@@ -43,6 +42,8 @@ wget -P models https://storage.googleapis.com/models-hao/voc-model-labels.txt
 python run_ssd_live_demo.py mb2-ssd-lite models/mb2-ssd-lite-mp-0_686.pth models/voc-model-labels.txt 
 ```
 
+When running the above demo, weights and outputs for [tkDNN](https://github.com/ceccocats/tkDNN/tree/cnet) will be written inside layers and debug folders.
+Put those folder in the mobilenetv2ssd test in tkDNN/tests in order to lunch the corresponding test. 
 The above MobileNetV2 SSD-Lite model is not ONNX-Compatible, as it uses Relu6 which is not supported by ONNX.
 The code supports the ONNX-Compatible version. Once I have trained a good enough MobileNetV2 model with Relu, I will upload
 the corresponding Pytorch and Caffe2 models.
