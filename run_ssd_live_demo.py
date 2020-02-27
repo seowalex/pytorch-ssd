@@ -116,8 +116,7 @@ def print_wb_output(model, input_batch, image, predictor):
 
 
 if len(sys.argv) < 4:
-    print(
-        'Usage: python run_ssd_example.py <net type>  <model path> <label path> [video file]')
+    print('Usage: python run_ssd_example.py <net type>  <model path> <label path> [video file]')
     sys.exit(0)
 net_type = sys.argv[1]
 model_path = sys.argv[2]

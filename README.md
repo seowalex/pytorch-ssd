@@ -16,6 +16,11 @@ It also has out-of-box support for retraining on Google Open Images dataset.
 5. Pandas
 6. Boto3 if you want to train models on the Google OpenImages Dataset.
 
+To install the environment with conda just use
+```
+conda env create -f env_mobv2ssd.yml
+```
+
 ## Run the demo
 ### Run the live MobilenetV1 SSD demo
 
