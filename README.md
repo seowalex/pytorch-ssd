@@ -169,6 +169,12 @@ python train_ssd.py --datasets ~/data/VOC0712/VOC2007/ ~/data/VOC0712/VOC2012/ -
 
 The dataset path is the parent directory of the folders: Annotations, ImageSets, JPEGImages, SegmentationClass and SegmentationObject. You can use multiple datasets to train.
 
+### Train on COCO
+
+```
+python train_ssd.py --dataset_type coco --datasets coco2017/ --validation_dataset coco2017/ --net mb2-ssd-lite --batch_size 24 --num_epochs 500 --scheduler cosine --lr 0.01 --t_max 200
+```
+
 
 ## Evaluation
 
