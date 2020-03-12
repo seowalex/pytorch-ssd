@@ -18,7 +18,7 @@ import os
 
 import torch.nn as nn
 from vision.ssd.data_preprocessing import PredictionTransform
-from vision.ssd.config import mobilenetv1_ssd_config as config
+from vision.ssd.config import mobilenetv2_ssd_config as config
 
 
 def bin_write(f, data):
@@ -40,7 +40,7 @@ def print_wb_output(model, input_batch, image, predictor):
 
     if not os.path.exists('debug'):
         os.makedirs('debug')  
-    if not os.path.exists('layes'):
+    if not os.path.exists('layers'):
         os.makedirs('layers')  
 
     for n, m in model.named_modules():
@@ -203,7 +203,7 @@ else:
     print("The net type is wrong. It should be one of vgg16-ssd, mb1-ssd and mb1-ssd-lite.")
     sys.exit(1)
 
-summary(net, (3, 300, 300))
+summary(net, (3, 512, 512))
 
 timer = Timer()
 while True:

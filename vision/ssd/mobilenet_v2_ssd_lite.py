@@ -5,7 +5,7 @@ from ..nn.mobilenet_v2 import MobileNetV2, InvertedResidual
 
 from .ssd import SSD, GraphPath
 from .predictor import Predictor
-from .config import mobilenetv1_ssd_config as config
+from .config import mobilenetv2_ssd_config as config
 
 
 def SeperableConv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=0, onnx_compatible=False):
