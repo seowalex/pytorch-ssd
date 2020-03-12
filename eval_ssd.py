@@ -4,6 +4,7 @@ from vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd, create_mobilenetv
 from vision.ssd.mobilenetv1_ssd_lite import create_mobilenetv1_ssd_lite, create_mobilenetv1_ssd_lite_predictor
 from vision.ssd.squeezenet_ssd_lite import create_squeezenet_ssd_lite, create_squeezenet_ssd_lite_predictor
 from vision.datasets.voc_dataset import VOCDataset
+from vision.datasets.voc_dataset import COCODataset
 from vision.datasets.open_images import OpenImagesDataset
 from vision.utils import box_utils, measurements
 from vision.utils.misc import str2bool, Timer
@@ -129,6 +130,8 @@ if __name__ == '__main__':
         dataset = VOCDataset(args.dataset, is_test=True)
     elif args.dataset_type == 'open_images':
         dataset = OpenImagesDataset(args.dataset, dataset_type="test")
+    elif args.dataset_type == 'coco':
+        dataset = COCODataset(args.dataset, dataset_type="test")
 
     true_case_stat, all_gb_boxes, all_difficult_cases = group_annotation_by_class(dataset)
     if args.net == 'vgg16-ssd':
