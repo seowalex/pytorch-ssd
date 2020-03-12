@@ -98,10 +98,16 @@ class COCODataset:
                 # print(line)
                 f_list = [float(i) for i in line.split(" ")]
                 class_id = f_list[0]
-                x1 = f_list[1] * width
-                y1 = f_list[2] * height
-                x2 = f_list[3] * width + x1
-                y2 = f_list[4] * height + y1
+                
+                x1_center = f_list[1] * width
+                y1_center = f_list[2] * height
+                w = f_list[3] * width 
+                h = f_list[4] * height 
+
+                x1 = x1_center - w/2
+                x2 = x1_center + w/2
+                y1 = y1_center - h/2
+                y2 = y1_center + h/2
                 
                 boxes.append([x1, y1, x2, y2])
                 labels.append(class_id)
