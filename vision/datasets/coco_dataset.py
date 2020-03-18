@@ -44,22 +44,27 @@ class COCODataset:
                 for line in infile:
                     classes.append(line.rstrip())
 
+                classes.insert(0, 'BACKGROUND')
                 self.class_names = tuple(classes)
                 logging.info("COCO Labels read from file: " + str(self.class_names))
         else:
             logging.info("No labels file, using default COCO classes.")
-            self.class_names = ("person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket",
+            self.class_names = ("BACKGROUND", "person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket",
                                 "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed", "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush")
 
         self.class_dict = {class_name: i for i,
                            class_name in enumerate(self.class_names)}
 
-    def __getitem__(self, index):
-        image_id = self.ids[index]
+    def _get_image_width_height(self, image_id):
         image = self._read_image(image_id)
         width = image.shape[1]
         height = image.shape[0]
-        boxes, labels = self._get_annotation(image_id, width, height)
+        return width, height
+
+    def __getitem__(self, index):
+        image_id = self.ids[index]
+        image = self._read_image(image_id)
+        boxes, labels, is_difficult = self._get_annotation(image_id)
         if self.transform:
             image, boxes, labels = self.transform(image, boxes, labels)
         if self.target_transform:
@@ -88,7 +93,8 @@ class COCODataset:
                 ids.append(line.rstrip().split('/')[-1].split('.')[0])
         return ids
 
-    def _get_annotation(self, image_id, width, height):
+    def _get_annotation(self, image_id):
+        width, height = self._get_image_width_height(image_id)
         annotation_file = self.label_path / f"{image_id}.txt"
         boxes = []
         labels = []
@@ -97,7 +103,7 @@ class COCODataset:
             for line in f:
                 # print(line)
                 f_list = [float(i) for i in line.split(" ")]
-                class_id = f_list[0]
+                class_id = f_list[0] +1 
                 
                 x1_center = f_list[1] * width
                 y1_center = f_list[2] * height
@@ -115,7 +121,8 @@ class COCODataset:
                 # print(boxes, labels)
 
         return (np.array(boxes, dtype=np.float32),
-                np.array(labels, dtype=np.int64))
+                np.array(labels, dtype=np.int64), 
+                np.zeros(len(labels)))
 
     def _read_image(self, image_id):
         image_file = self.image_path / f"{image_id}.jpg"

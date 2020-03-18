@@ -172,7 +172,7 @@ The dataset path is the parent directory of the folders: Annotations, ImageSets,
 ### Train on COCO
 
 ```
-python train_ssd.py --dataset_type coco --datasets coco2017/ --validation_dataset coco2017/ --net mb2-ssd-lite --batch_size 24 --num_epochs 500 --scheduler cosine --lr 0.01 --t_max 200
+python train_ssd.py --dataset_type coco  --datasets ../../dataset/coco2017/ --validation_dataset ../../dataset/coco2017/ --net mb2-ssd-lite --base_net models/mb2-imagenet-71_8.pth  --scheduler cosine --lr 0.001 --t_max 200 --validation_epochs 5 --num_epochs 200 --batch_size 16
 ```
 
 
