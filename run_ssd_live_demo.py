@@ -18,7 +18,7 @@ import os
 
 import torch.nn as nn
 from vision.ssd.data_preprocessing import PredictionTransform
-from vision.ssd.config import mobilenetv2_ssd_config as config
+from vision.ssd.config import mobilenetv1_ssd_config as config
 
 
 def bin_write(f, data):
