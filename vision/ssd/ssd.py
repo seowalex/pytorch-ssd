@@ -88,6 +88,7 @@ class SSD(nn.Module):
         locations = torch.cat(locations, 1)
         
         if self.is_test:
+            self.priors = self.priors.to(torch.device("cpu"))
             confidences = F.softmax(confidences, dim=2)
             boxes = box_utils.convert_locations_to_boxes(
                 locations, self.priors, self.config.center_variance, self.config.size_variance
