@@ -3,35 +3,22 @@ import logging
 import pathlib
 import cv2
 import os
-
+import json
 
 class COCODataset:
 
-    def __init__(self, root, transform=None, target_transform=None, is_test=False,  label_file=None):
-        """Dataset for VOC data.
-        Args:
-            root: the root of the COCO2014 or COCO14 dataset, the directory contains the following:
-                -images
-                    -train
-                    -val
-                -labels
-                    -train 
-                    -val
-                all_images_train.txt -- training set
-                all_images_val.txt -- validation set
-                coco.names 
-        """
+    def __init__(self, root, transform=None, target_transform=None, is_test=False, label_file=None):
         self.root = pathlib.Path(root)
         self.transform = transform
         self.target_transform = target_transform
         if is_test:
             image_sets_file = self.root / "all_images_val.txt"
-            self.image_path = self.root / "images" / "val2017"
-            self.label_path = self.root / "labels" / "val2017"
+            self.image_path = self.root / "data" / "val"
+            self.label_file = self.root / "data" / "val.json"
         else:
             image_sets_file = self.root / "all_images_train.txt"
-            self.image_path = self.root / "images" / "train2017"
-            self.label_path = self.root / "labels" / "train2017"
+            self.image_path = self.root / "data" / "train"
+            self.label_file = self.root / "data" / "train.json"
 
         self.ids = COCODataset._read_image_ids(image_sets_file)
 
@@ -44,7 +31,6 @@ class COCODataset:
                 for line in infile:
                     classes.append(line.rstrip())
 
-                classes.insert(0, 'BACKGROUND')
                 self.class_names = tuple(classes)
                 logging.info("COCO Labels read from file: " + str(self.class_names))
         else:
@@ -94,26 +80,22 @@ class COCODataset:
         return ids
 
     def _get_annotation(self, image_id):
-        width, height = self._get_image_width_height(image_id)
-        annotation_file = self.label_path / f"{image_id}.txt"
+        annotation_file = self.label_file
         boxes = []
         labels = []
 
         with open(annotation_file) as f:
-            for line in f:
-                # print(line)
-                f_list = [float(i) for i in line.split(" ")]
-                class_id = f_list[0] +1 
-                
-                x1_center = f_list[1] * width
-                y1_center = f_list[2] * height
-                w = f_list[3] * width 
-                h = f_list[4] * height 
+            data = json.load(f)
+            annotations = data['annotations']
 
-                x1 = x1_center - w/2
-                x2 = x1_center + w/2
-                y1 = y1_center - h/2
-                y2 = y1_center + h/2
+            for annotation in filter(lambda x: str(x['image_id']) == image_id, annotations):
+                class_id = annotation['category_id'] - 1
+
+                x1 = annotation['bbox'][0]
+                y1 = annotation['bbox'][1]
+
+                x2 = x1 + annotation['bbox'][2]
+                y2 = y1 + annotation['bbox'][3]
                 
                 boxes.append([x1, y1, x2, y2])
                 labels.append(class_id)
